@@ -10,15 +10,18 @@ const server = new Hapi.Server({
 })
 
 // API Routes
-const GameMap = require('./pages/gamemap');
+const GameMap = require('./api/gamemap');
 
 app.prepare().then(async () => {
   server.route({
     method: 'GET',
     path: '/map',
-    handler: GameMap(app)
-  })
-  
+    handler: GameMap(app),
+    options: {
+      cache: false,
+    }
+  });
+
   // Next Specific Routes
   server.route({
     method: 'GET',
