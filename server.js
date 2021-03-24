@@ -9,19 +9,17 @@ const server = new Hapi.Server({
   port,
 })
 
+// API Routes
+const GameMap = require('./pages/gamemap');
+
 app.prepare().then(async () => {
   server.route({
     method: 'GET',
-    path: '/a',
-    handler: pathWrapper(app, '/a'),
+    path: '/map',
+    handler: GameMap(app)
   })
-
-  server.route({
-    method: 'GET',
-    path: '/b',
-    handler: pathWrapper(app, '/b'),
-  })
-
+  
+  // Next Specific Routes
   server.route({
     method: 'GET',
     path: '/_next/{p*}' /* next specific routes */,
