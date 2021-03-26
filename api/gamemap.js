@@ -90,13 +90,30 @@ const fillSingleBlank = (layout) => {
 }
 
 const selectExit = (layout) => {
-  const x = (Math.floor(Math.random() * layout.length - 1));
-  const y = (Math.floor(Math.random() * layout.length - 1));
-  const surrounding = getSurrounding(layout, x, y);
-  return {
-    x,
-    y,
+  const generateXY = () => {
+    const x = Math.floor(Math.random() * layout.length - 1) + 1;
+    const y = Math.floor(Math.random() * layout.length - 1) + 1;
+    return {
+      x,
+      y,
+    }
   }
+  const checkAccess = (exit) => {
+    const surrounding = getSurrounding(layout, exit.x, exit.y);
+    return ((surrounding.n && surrounding.n.wall)
+      && (surrounding.e && surrounding.e.wall)
+      && (surrounding.s && surrounding.s.wall)
+      && (surrounding.w && surrounding.w.wall))
+  }
+  const cycleExit = (exit) => {
+    if(!checkAccess(exit)) {
+      return cycleExit(generateXY());
+    }
+    return exit;
+  }
+  let exit = generateXY();
+  exit = cycleExit(exit);
+  return exit;
 }
 
 module.exports = (app, pathName, opts) => async (
