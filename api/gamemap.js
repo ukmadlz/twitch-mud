@@ -33,21 +33,21 @@ const getSurrounding = (layout, x, y) => {
 const generateLayout = async (size) => {
   const layout = []
   //  Build the rows
-  for(let x = 0; x < size; x = x + 1) {
-    layout[x] = [];
+  for(let y = 0; y < size; y = y + 1) {
+    layout[y] = [];
     // Build the columns
-    for(let y = 0; y < size; y = y + 1) {
-      layout [x][y] = {};
+    for(let x = 0; x < size; x = x + 1) {
+      layout [y][x] = {};
       let wall = false;
       let destructable = false;
       // Add the walls
-      if ((x == 0 || x == (size - 1)) 
-        || (y == 0 || y == (size - 1))) {
+      if ((y == 0 || y == (size - 1)) 
+        || (x == 0 || x == (size - 1))) {
         wall = true;
       } else {
         // Generate random wall
         let random = 0.2;
-        const position = getSurrounding(layout, y, x);
+        const position = getSurrounding(layout, x, y);
         if(position.n.wall || position.w.wall) {
           random = 0.5
 
@@ -64,7 +64,7 @@ const generateLayout = async (size) => {
           }
         }
       }
-      layout[x][y] = {
+      layout[y][x] = {
         wall,
         destructable,
       }
