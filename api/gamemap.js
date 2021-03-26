@@ -3,8 +3,6 @@ const getSurrounding = (layout, x, y) => {
   const yMax = layout.length - 1;
   const xMax = layout[0].length - 1;
 
-  console.log(x, y, layout[y][x]);
-
   if (y > 0)
     position.n = layout[y-1][x];
   
@@ -75,15 +73,17 @@ const generateLayout = async (size) => {
   return layout
 }
 
-const fillSingleBlank = (layout) => {
-  return layout.map((row, x) => {
-    return row.map((column, y) => {
-      // if((layout[x][y+1] && layout[x][y+1].wall) 
-      //   && (layout[x+1][y] && layout[x+1][y].wall)
-      //   && (layout[x][y-1] && layout[x][y-1].wall)
-      //   && (layout[x-1][y] && layout[x-1][y].wall)) {
-      //     column.wall = true
-      //   }
+const fillSingleBlank = (layout, size) => {
+  return layout.map((row, y) => {
+    return row.map((column, x) => {
+      const surrounding = getSurrounding(layout, x, y);
+      if (!column.wall
+        && surrounding.n.wall 
+        && surrounding.e.wall
+        && surrounding.s.wall
+        && surrounding.w.wall) {
+          column.wall = true;
+        }
       return column;
     });
   });
@@ -93,10 +93,12 @@ module.exports = (app, pathName, opts) => async (
   data,
   h
 ) => {
+    // Size of the game area
+    const size = 20;
     // Creates the initial layout
-    let layout = await generateLayout(20);
+    let layout = await generateLayout(size);
     // Fill in tiny spaces
-    layout = await fillSingleBlank(layout);
+    layout = await fillSingleBlank(layout, size);
     return h.response({
       layout,
       'monsters': [],

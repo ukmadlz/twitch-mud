@@ -11,6 +11,7 @@
     "@hapi/hapi": "^20.1.2",
     "axios": "^0.21.1",
     "cross-env": "^5.2.0",
+    "debug": "^2.6.9",
     "next": "latest",
     "react": "^16.7.0",
     "react-dom": "^16.7.0"
