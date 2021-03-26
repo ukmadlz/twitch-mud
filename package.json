@@ -2,7 +2,7 @@
   "name": "twitch-mud",
   "version": "0.0.1",
   "scripts": {
-    "watch": "nodemon -x 'npm run dev' -w ./api -w server.js",
+    "watch": "nodemon -x \"npm run dev\" -w ./api -w server.js",
     "dev": "node server.js",
     "build": "next build",
     "start": "cross-env NODE_ENV=production node server.js"
