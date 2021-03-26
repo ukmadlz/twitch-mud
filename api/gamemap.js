@@ -16,6 +16,11 @@ const generateLayout = async (size) => {
         let random = 0.2;
         if(layout[x-1][y].wall || layout[x][y-1].wall) {
           random = 0.5
+
+          // 0 wall if will make a square
+          if (layout[x-1][y-1].wall && layout[x-1][y].wall && layout[x][y-1].wall) {
+            random = 0;
+          }
         }
         if(Math.random() < random) {
           wall = true;
