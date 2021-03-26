@@ -13,13 +13,11 @@ const server = new Hapi.Server({
 const GameMap = require('./api/gamemap');
 
 app.prepare().then(async () => {
+  // Game map
   server.route({
     method: 'GET',
     path: '/map',
     handler: GameMap(app),
-    options: {
-      cache: false,
-    }
   });
 
   // Next Specific Routes

@@ -12,15 +12,21 @@ export async function getStaticProps() {
 export default function Game({ layout, exit, monsters }) {
   const completeMap = layout.map((row, x) => {
     const completeRow = row.map((column, y) => {
+      let blockColour = ((column.wall) ? 'black' : 'white' );
+      if (column.destructable) {
+        blockColour = 'gray';
+      }
+      if (exit.x === x && exit.y === y) {
+        blockColour = 'green';
+      }
       return <td
         key={'position'+x+y}
         style={{
           width: "2em",
           height: "2em",
-          background: ((column.wall) ? 'black' : 'white' )
+          background: blockColour,
         }}
       >
-        {(exit.x === x && exit.y === y) ? 'E' : ''}
       </td>
     });
     return <tr key={'row'+x}>{completeRow}</tr>

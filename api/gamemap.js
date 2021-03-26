@@ -6,6 +6,7 @@ const generateLayout = async (size) => {
     // Build the columns
     for(let y = 0; y < size; y = y + 1) {
       let wall = false;
+      let destructable = false;
       // Add the walls
       if ((x == 0 || x == (size - 1)) 
         || (y == 0 || y == (size - 1))) {
@@ -18,21 +19,33 @@ const generateLayout = async (size) => {
         }
         if(Math.random() < random) {
           wall = true;
+          // Can you blow the wall up!
+          if(Math.random() < 0.5) {
+            destructable = true;
+          }
         }
       }
       layout[x][y] = {
         wall,
+        destructable,
       }
     }
   }
   return layout
 }
 
+const fillSingleBlank = (layout) => {
+  return layout;
+}
+
 module.exports = (app, pathName, opts) => async (
-  { raw, query, params },
+  data,
   h
 ) => {
-    const layout = await generateLayout(20);
+    // Creates the initial layout
+    let layout = await generateLayout(20);
+    // Fill in tiny spaces
+    layout = await fillSingleBlank(layout);
     return h.response({
       layout,
       'monsters': [],
