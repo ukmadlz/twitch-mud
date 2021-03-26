@@ -73,7 +73,7 @@ const generateLayout = async (size) => {
   return layout
 }
 
-const fillSingleBlank = (layout, size) => {
+const fillSingleBlank = (layout) => {
   return layout.map((row, y) => {
     return row.map((column, x) => {
       const surrounding = getSurrounding(layout, x, y);
@@ -89,22 +89,31 @@ const fillSingleBlank = (layout, size) => {
   });
 }
 
+const selectExit = (layout) => {
+  const x = (Math.floor(Math.random() * layout.length - 1));
+  const y = (Math.floor(Math.random() * layout.length - 1));
+  const surrounding = getSurrounding(layout, x, y);
+  return {
+    x,
+    y,
+  }
+}
+
 module.exports = (app, pathName, opts) => async (
   data,
   h
 ) => {
     // Size of the game area
-    const size = 20;
+    const gameSize = 20;
     // Creates the initial layout
-    let layout = await generateLayout(size);
+    let layout = await generateLayout(gameSize);
     // Fill in tiny spaces
-    layout = await fillSingleBlank(layout, size);
+    layout = await fillSingleBlank(layout);
+    // Add an exit
+    const exit = selectExit(layout);
     return h.response({
       layout,
       'monsters': [],
-      'exit': {
-        x: 2,
-        y: 2,
-      }
+      exit
     })
   }
