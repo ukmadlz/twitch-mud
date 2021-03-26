@@ -2,6 +2,7 @@
   "name": "twitch-mud",
   "version": "0.0.1",
   "scripts": {
+    "watch": "nodemon -x 'npm run dev' -w ./api -w server.js",
     "dev": "node server.js",
     "build": "next build",
     "start": "cross-env NODE_ENV=production node server.js"
@@ -14,5 +15,8 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
 }
