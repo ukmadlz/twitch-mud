@@ -76,7 +76,17 @@ const generateLayout = async (size) => {
 }
 
 const fillSingleBlank = (layout) => {
-  return layout;
+  return layout.map((row, x) => {
+    return row.map((column, y) => {
+      // if((layout[x][y+1] && layout[x][y+1].wall) 
+      //   && (layout[x+1][y] && layout[x+1][y].wall)
+      //   && (layout[x][y-1] && layout[x][y-1].wall)
+      //   && (layout[x-1][y] && layout[x-1][y].wall)) {
+      //     column.wall = true
+      //   }
+      return column;
+    });
+  });
 }
 
 module.exports = (app, pathName, opts) => async (
