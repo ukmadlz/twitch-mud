@@ -10,11 +10,14 @@ export async function getStaticProps() {
 }
 
 export default function Game({ layout, exit, monsters }) {
-  const completeMap = layout.map((row, x) => {
-    const completeRow = row.map((column, y) => {
+  const completeMap = layout.map((row, y) => {
+    const completeRow = row.map((column, x) => {
       let blockColour = ((column.wall) ? 'black' : 'white' );
       if (column.destructable) {
         blockColour = 'gray';
+      }
+      if (column.nuke) {
+        blockColour = 'red';
       }
       if (exit.x === x && exit.y === y) {
         blockColour = 'green';
@@ -29,7 +32,7 @@ export default function Game({ layout, exit, monsters }) {
       >
       </td>
     });
-    return <tr key={'row'+x}>{completeRow}</tr>
+    return <tr key={'row'+y}>{completeRow}</tr>
   });
   return <table>
     <tbody>
