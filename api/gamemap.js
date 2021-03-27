@@ -12,33 +12,15 @@ const getSurrounding = (layout, x, y) => {
     y: current.y,
     wall: current.wall,
     destructable: current.destructable,
-   };
-  const yMax = layout.length - 1;
-  const xMax = layout[0].length - 1;
-
-  if (y > 0)
-    position.n = () => getSurrounding(layout, x, y-1);
-  
-  if (y < yMax)
-    position.s = () => getSurrounding(layout, x, y+1);
-
-  if (x > 0)
-    position.w = () => getSurrounding(layout, x-1, y);
-  
-  if (x < xMax)
-    position.e = () => getSurrounding(layout, x+1, y);
-
-  if (x < xMax && y > 0)
-    position.ne = () => getSurrounding(layout, x+1, y-1);
-  
-  if (x > 0 && y > 0)
-    position.nw = () => getSurrounding(layout, x-1, y-1);
-
-  if (x <= xMax && y < yMax)
-    position.se = () => getSurrounding(layout, x+1, y+1);
-  
-  if (x > 0 && y < yMax)
-    position.sw = () => getSurrounding(layout, x-1, y+1);
+    n: () => getSurrounding(layout, x, y-1),
+    s: () => getSurrounding(layout, x, y+1),
+    e: () => getSurrounding(layout, x+1, y),
+    w: () => getSurrounding(layout, x-1, y),
+    ne: () => getSurrounding(layout, x+1, y-1),
+    nw: () => getSurrounding(layout, x-1, y-1),
+    se: () => getSurrounding(layout, x+1, y+1),
+    sw: () => getSurrounding(layout, x-1, y+1),
+  }
 
   return position;
 }
@@ -88,23 +70,26 @@ const generateLayout = async (size) => {
   return layout
 }
 
-const fillSingleBlank = (layout) => {
+const fillSingleBlanks = (layout) => {
+  console.log('Running fill single blanks');
   return layout.map((row, y) => {
     return row.map((column, x) => {
-      // const max = row.length - 1;
-      // // shortcut processing on the edge
-      // if (y == 0 || y == max || x == 0 || x == max) {
-      //   return column;
-      // }
+      const max = row.length - 1;
+      // shortcut processing on the edge
+      if (y == 0 || y == max || x == 0 || x == max) {
+        return column;
+      }
       
       const surrounding = getSurrounding(layout, x, y);
       if (!column.wall
-        && surrounding.n().wall 
-        && surrounding.e().wall
-        && surrounding.s().wall
-        && surrounding.w().wall) {
+        && surrounding.n()?.wall 
+        && surrounding.e()?.wall
+        && surrounding.s()?.wall
+        && surrounding.w()?.wall) {
           console.log('Filling blank at', x, y);
+          console.log(column);
           column.wall = true;
+          console.log(column);
         }
       return column;
     });
@@ -146,17 +131,17 @@ const deblock = async (layout) => {
 
         while (testDown != null && testDown.y < max && testDown.wall) {
           let xAcross = 0;
-          while (testAcross != null && testAcross.x < max && testAcross.wall) {
+          while (testAcross != null && testAcross.x < max - 1 && testAcross.wall) {
             xAcross += 1;
             testAcross = getSurrounding(layout, testDown.x + xAcross, testDown.y);
           }
-          maxAcross = xAcross < maxAcross ? xAcross : maxAcross;
+          maxAcross = (xAcross > 1 && xAcross < maxAcross) ? xAcross : maxAcross;
           goingDown++;
           testDown = getSurrounding(layout, x, y + goingDown);
           testAcross = getSurrounding(layout, x, y + goingDown);
         }
 
-        if (maxAcross > 1 && goingDown > 1) {
+        if (maxAcross < 999 && maxAcross > 1 && goingDown > 1) {
           // console.log('Found block:', x, y, maxAcross, goingDown);
           // choose whether to keep an x or y
           let choice = getRandomInt(2);
@@ -191,7 +176,7 @@ const deblock = async (layout) => {
     });
   });
 
-  return fillSingleBlank(layout);
+  return await fillSingleBlanks(layout);
 }
 
 const selectExit = (layout) => {
@@ -230,9 +215,15 @@ module.exports = (app, pathName, opts) => async (
     const gameSize = 20;
     // Creates the initial layout
     let layout = await generateLayout(gameSize);
-    // Fill in tiny spaces
-    layout = await fillSingleBlank(layout);
-    layout = await deblock(layout);
+    try {
+      // Fill in tiny spaces
+      layout = await fillSingleBlanks(layout);
+      // remove big blocks of wall
+      layout = await deblock(layout);
+    }
+    catch (e) {
+      console.log(e);
+    }
 
     // Add an exit
     const exit = selectExit(layout);
