@@ -25,8 +25,11 @@ const getSurrounding = (layout, x, y) => {
   return position;
 }
 
-const generateLayout = async (size) => {
-  const layout = []
+const generateLayout = async (size, mapFactor) => {
+  const generalWallRandom = 0.6 - (mapFactor / 2);
+  const alignedWallFactor = mapFactor;
+  
+  const layout = [];
   //  Build the rows
   for(let y = 0; y < size; y = y + 1) {
     layout[y] = [];
@@ -41,10 +44,10 @@ const generateLayout = async (size) => {
         wall = true;
       } else {
         // Generate random wall
-        let random = 0.2;
+        let random = generalWallRandom;
         const position = getSurrounding(layout, x, y);
         if(position.n().wall || position.w().wall) {
-          random = 0.5
+          random = alignedWallFactor
 
           // 0 wall if will make a square
           if (position.n().wall && position.w().wall && position.nw().wall) {
@@ -54,7 +57,7 @@ const generateLayout = async (size) => {
         if(Math.random() < random) {
           wall = true;
           // Can you blow the wall up!
-          if(Math.random() < 0.5) {
+          if(Math.random() < generalWallRandom) {
             destructable = true;
           }
         }
@@ -213,10 +216,28 @@ module.exports = (app, pathName, opts) => async (
   data,
   h
 ) => {
+  let mapType = 'Village';
+  let mapFactor = 0;
+  const mapTypeChoice = getRandomInt(3);
+  switch (mapTypeChoice) {
+    case 1:
+      mapType = 'Forest';
+      mapFactor = 0.1;
+      break;
+
+    case 2:
+      maptype = 'Village';
+      mapFactor = 0.3;
+      break;
+
+    case 3:
+      mapType = 'Castle';
+      mapFactor = 0.8;
+  }
     // Size of the game area
     const gameSize = 20;
     // Creates the initial layout
-    let layout = await generateLayout(gameSize);
+    let layout = await generateLayout(gameSize, mapFactor);
     try {
       // Fill in tiny spaces
       layout = await fillSingleBlanks(layout);
@@ -230,6 +251,7 @@ module.exports = (app, pathName, opts) => async (
     // Add an exit
     const exit = selectExit(layout);
     return h.response({
+      mapType,
       layout,
       'monsters': [],
       exit
