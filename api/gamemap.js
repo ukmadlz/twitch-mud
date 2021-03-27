@@ -156,6 +156,7 @@ const deblock = async (layout) => {
               for (let nukerY = 0; nukerY < goingDown; nukerY++) {
                 if (nukerX + 1 != choice) {
                   layout[y + nukerY][x + nukerX].wall = false;
+                  layout[y + nukerY][x + nukerX].destructable = false;
                   layout[y + nukerY][x + nukerX].nuke = true;
                 }
               }
@@ -169,6 +170,7 @@ const deblock = async (layout) => {
               for (let nukerY = 0; nukerY < goingDown; nukerY++) {
                 if (nukerY + 1 != choice) {
                   layout[y + nukerY][x + nukerX].wall = false;
+                  layout[y + nukerY][x + nukerX].destructable = false;
                   layout[y + nukerY][x + nukerX].nuke = true;
                 }
               }
