@@ -103,6 +103,7 @@ const fillSingleBlank = (layout) => {
         && surrounding.e().wall
         && surrounding.s().wall
         && surrounding.w().wall) {
+          console.log('Filling blank at', x, y);
           column.wall = true;
         }
       return column;
@@ -111,14 +112,19 @@ const fillSingleBlank = (layout) => {
 }
 
 /**
- * Returns an integer representing a number from 1 to max
- * @param {int} max Max number of options to return
- * @returns {int} The number chosen
+ * Returns an integer representing a number from 1 to max.
+ * @param {int} max Max number of options to return.
+ * @returns {int} The number chosen.
  */
 const getRandomInt = (max) => {
   return Math.ceil(Math.random() * max);
 }
 
+/**
+ * Searches the map for big blocks of walls. Will randomly keep a row or column of this block.
+ * @param layout Current map layout.
+ * @returns Updated layout.
+ */
 const deblock = async (layout) => {
   console.log('Running deblock');
 
@@ -130,7 +136,6 @@ const deblock = async (layout) => {
         return;
       }
 
-      let test = getSurrounding(layout, x, y);
       let testAcross = getSurrounding(layout, x, y);
       let testDown = getSurrounding(layout, x, y);
       // console.log(test);
@@ -152,16 +157,32 @@ const deblock = async (layout) => {
         }
 
         if (maxAcross > 1 && goingDown > 1) {
-          console.log('Found block:', x, y, maxAcross, goingDown);
-          // chose whether to keep an x or y
+          // console.log('Found block:', x, y, maxAcross, goingDown);
+          // choose whether to keep an x or y
           let choice = getRandomInt(2);
           if (choice == 1) {
             // keep a single column
             choice = getRandomInt(maxAcross);
+            console.log('For block', maxAcross, goingDown, 'at', x, y, 'keeping column', choice);
+            for (let nukerX = 0; nukerX < maxAcross; nukerX++) {
+              for (let nukerY = 0; nukerY < goingDown; nukerY++) {
+                if (nukerX != choice) {
+                  layout[y + nukerY][x + nukerX].wall = false;
+                }
+              }
+            }
 
           } else {
             // keep a single row
             choice = getRandomInt(goingDown);
+            console.log('For block', maxAcross, goingDown, 'at', x, y, 'keeping row', choice);
+            for (let nukerX = 0; nukerX < maxAcross; nukerX++) {
+              for (let nukerY = 0; nukerY < goingDown; nukerY++) {
+                if (nukerY != choice) {
+                  layout[y + nukerY][x + nukerX].wall = false;
+                }
+              }
+            }
           }
         }
       } catch (e) {
@@ -170,8 +191,35 @@ const deblock = async (layout) => {
     });
   });
 
-  //return fillSingleBlank(layout);
-  return layout;
+  return fillSingleBlank(layout);
+}
+
+const selectExit = (layout) => {
+  const generateXY = () => {
+    const innerMapSize = layout.length - 2;
+    const x = getRandomInt(innerMapSize);
+    const y = getRandomInt(innerMapSize);
+    return {
+      x,
+      y,
+    }
+  }
+  const checkAccess = (exit) => {
+    const surrounding = getSurrounding(layout, exit.x, exit.y);
+    return !((surrounding.n && surrounding.n().wall)
+      && (surrounding.e && surrounding.e().wall)
+      && (surrounding.s && surrounding.s().wall)
+      && (surrounding.w && surrounding.w().wall))
+  }
+  const cycleExit = (exit) => {
+    if(!checkAccess(exit)) {
+      return cycleExit(generateXY());
+    }
+    return exit;
+  }
+  let exit = generateXY();
+  exit = cycleExit(exit);
+  return exit;
 }
 
 module.exports = (app, pathName, opts) => async (
@@ -179,19 +227,18 @@ module.exports = (app, pathName, opts) => async (
   h
 ) => {
     // Size of the game area
-    const size = 10;
+    const gameSize = 20;
     // Creates the initial layout
-    let layout = await generateLayout(size);
+    let layout = await generateLayout(gameSize);
     // Fill in tiny spaces
     layout = await fillSingleBlank(layout);
     layout = await deblock(layout);
 
+    // Add an exit
+    const exit = selectExit(layout);
     return h.response({
       layout,
       'monsters': [],
-      'exit': {
-        x: 2,
-        y: 2,
-      }
-    });
+      exit
+    })
   }
