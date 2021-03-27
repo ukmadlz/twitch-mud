@@ -129,9 +129,9 @@ const deblock = async (layout) => {
 
       try {
 
-        while (testDown != null && testDown.y < max && testDown.wall) {
+        while (testDown != null && testDown.y < max && testDown.wall && testDown.e().wall) {
           let xAcross = 0;
-          while (testAcross != null && testAcross.x < max - 1 && testAcross.wall) {
+          while (testAcross != null && testAcross.x < max && testAcross.wall) {
             xAcross += 1;
             testAcross = getSurrounding(layout, testDown.x + xAcross, testDown.y);
           }
@@ -151,8 +151,9 @@ const deblock = async (layout) => {
             console.log('For block', maxAcross, goingDown, 'at', x, y, 'keeping column', choice);
             for (let nukerX = 0; nukerX < maxAcross; nukerX++) {
               for (let nukerY = 0; nukerY < goingDown; nukerY++) {
-                if (nukerX != choice) {
+                if (nukerX + 1 != choice) {
                   layout[y + nukerY][x + nukerX].wall = false;
+                  layout[y + nukerY][x + nukerX].nuke = true;
                 }
               }
             }
@@ -163,8 +164,9 @@ const deblock = async (layout) => {
             console.log('For block', maxAcross, goingDown, 'at', x, y, 'keeping row', choice);
             for (let nukerX = 0; nukerX < maxAcross; nukerX++) {
               for (let nukerY = 0; nukerY < goingDown; nukerY++) {
-                if (nukerY != choice) {
+                if (nukerY + 1 != choice) {
                   layout[y + nukerY][x + nukerX].wall = false;
+                  layout[y + nukerY][x + nukerX].nuke = true;
                 }
               }
             }

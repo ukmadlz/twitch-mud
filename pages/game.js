@@ -16,6 +16,9 @@ export default function Game({ layout, exit, monsters }) {
       if (column.destructable) {
         blockColour = 'gray';
       }
+      if (column.nuke) {
+        blockColour = 'red';
+      }
       if (exit.x === x && exit.y === y) {
         blockColour = 'green';
       }
