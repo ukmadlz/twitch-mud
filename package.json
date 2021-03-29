@@ -2,10 +2,12 @@
   "name": "twitch-mud",
   "version": "0.0.1",
   "scripts": {
-    "watch": "nodemon -x \"npm run dev\" -w ./api -w server.js",
+    "watch": "nodemon -x \"npm run dev\" -w ./helpers -w ./api -w server.js",
     "dev": "node server.js",
     "build": "next build",
-    "start": "cross-env NODE_ENV=production node server.js"
+    "start": "cross-env NODE_ENV=production node server.js",
+    "lint": "eslint --color ./api/**/* ./helpers/**/* ./pages/**/* ./*.js",
+    "lint:fix": "eslint --color --fix ./api/**/* ./helpers/**/* ./pages/**/* ./*.js"
   },
   "dependencies": {
     "@hapi/hapi": "^20.1.2",
@@ -18,6 +20,12 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "eslint": "^7.23.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.23.1",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "nodemon": "^2.0.7"
   }
 }

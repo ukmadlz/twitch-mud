@@ -1,3 +1,3 @@
 module.exports = {
-    generateEtags: false,
-}
+  generateEtags: false,
+};

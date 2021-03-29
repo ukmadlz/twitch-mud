@@ -1,15 +1,17 @@
-import Axios from '../helpers/axios'
+import Axios from '../helpers/axios';
 
 export async function getStaticProps() {
   const { data } = await Axios.get('http://localhost:3000/map');
   return {
     props: {
-      ...data
+      ...data,
     },
   };
 }
 
-export default function Game({ mapType, layout, exit, monsters }) {
+export default function Game({
+  mapType, layout, exit, monsters,
+}) {
   const max = layout.length;
   const completeMap = layout.map((row, y) => {
     const completeRow = row.map((column, x) => {
@@ -44,32 +46,37 @@ export default function Game({ mapType, layout, exit, monsters }) {
         }
 
         if (column.nuke) {
-          //blockColour = '#edd';
+          // blockColour = '#edd';
         }
       }
       if (exit.x === x && exit.y === y) {
         blockColour = 'blue';
       }
-      return <td
-        key={'position'+x+y}
-        style={{
-          width: "2em",
-          height: "2em",
-          background: blockColour,
-          border,
-          color: "white",
-        }}
-      ><center>{content}</center>
-      </td>
+      return (
+        <td
+          key={`position${x}${y}`}
+          style={{
+            width: '2em',
+            height: '2em',
+            background: blockColour,
+            border,
+            color: 'white',
+          }}
+        >
+          <center>{content}</center>
+        </td>
+      );
     });
-    return <tr key={'row'+y}>{completeRow}</tr>
+    return <tr key={`row${y}`}>{completeRow}</tr>;
   });
-  return <div>
-    <h1>{mapType}</h1>
-    <table>
-      <tbody>
-      {completeMap}
-      </tbody>
-    </table>
-  </div>
+  return (
+    <div>
+      <h1>{mapType}</h1>
+      <table>
+        <tbody>
+          {completeMap}
+        </tbody>
+      </table>
+    </div>
+  );
 }
