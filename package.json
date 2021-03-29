@@ -2,12 +2,12 @@
   "name": "twitch-mud",
   "version": "0.0.1",
   "scripts": {
-    "watch": "nodemon -x \"npm run dev\" -w ./helpers -w ./api -w server.js",
+    "watch": "NODE_ENV=development nodemon -x \"npm run dev\" -w ./helpers -w ./api -w server.js",
     "dev": "node server.js",
     "build": "next build",
     "start": "cross-env NODE_ENV=production node server.js",
-    "lint": "eslint --color ./api/**/* ./helpers/**/* ./pages/**/* ./*.js",
-    "lint:fix": "eslint --color --fix ./api/**/* ./helpers/**/* ./pages/**/* ./*.js"
+    "lint": "eslint --color ./api/**/* ./helpers/**/* ./migrations/**/* ./pages/**/* ./*.js",
+    "lint:fix": "eslint --color --fix ./api/**/* ./helpers/**/* ./migrations/**/* ./pages/**/* ./*.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.34",
@@ -15,9 +15,13 @@
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@hapi/hapi": "^20.1.2",
     "axios": "^0.21.1",
+    "bookshelf": "^1.2.0",
     "cross-env": "^5.2.0",
     "debug": "^2.6.9",
+    "dotenv": "^8.2.0",
+    "knex": "^0.21.19",
     "next": "latest",
+    "pg": "^8.5.1",
     "react": "^16.7.0",
     "react-dom": "^16.7.0"
   },

@@ -1,6 +1,6 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDoorOpen, faTree } from '@fortawesome/free-solid-svg-icons';
 import Axios from '../helpers/axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDoorOpen, faTree } from '@fortawesome/free-solid-svg-icons'
 
 /**
  *
@@ -41,10 +41,12 @@ export default function Game({
           const r = Math.random() * g;
           blockColour = 'white';
           fontColour = `rgb(${r}, ${g}, 0)`;
-          content = <FontAwesomeIcon
+          content = (
+            <FontAwesomeIcon
               icon={faTree}
               size="2x"
-          />
+            />
+          );
         }
 
         if (column.wall && mapType == 'Castle') {
@@ -71,10 +73,12 @@ export default function Game({
       if (exit.x === x && exit.y === y) {
         fontColour = 'brown';
         blockColour = 'white';
-        content = <FontAwesomeIcon
+        content = (
+          <FontAwesomeIcon
             icon={faDoorOpen}
             size="2x"
-        />
+          />
+        );
       }
       return (
         <td
