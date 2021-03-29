@@ -1,5 +1,10 @@
 import Axios from '../helpers/axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDoorOpen, faTree } from '@fortawesome/free-solid-svg-icons'
 
+/**
+ *
+ */
 export async function getStaticProps() {
   const { data } = await Axios.get('http://localhost:3000/map');
   return {
@@ -9,6 +14,13 @@ export async function getStaticProps() {
   };
 }
 
+/**
+ * @param root0
+ * @param root0.mapType
+ * @param root0.layout
+ * @param root0.exit
+ * @param root0.monsters
+ */
 export default function Game({
   mapType, layout, exit, monsters,
 }) {
@@ -20,13 +32,19 @@ export default function Game({
       if (x == 0) content = y;
       let border = '';
       let blockColour = ((column.wall) ? 'black' : 'white');
+      let fontColour = 'white';
 
       if (x != 0 && x != max - 1 && y != 0 && y != max - 1) {
         // set block colours
         if (column.wall && mapType == 'Forest') {
           const g = 100 + Math.random() * 155;
           const r = Math.random() * g;
-          blockColour = `rgb(${r}, ${g}, 0)`;
+          blockColour = 'white';
+          fontColour = `rgb(${r}, ${g}, 0)`;
+          content = <FontAwesomeIcon
+              icon={faTree}
+              size="2x"
+          />
         }
 
         if (column.wall && mapType == 'Castle') {
@@ -49,8 +67,14 @@ export default function Game({
           // blockColour = '#edd';
         }
       }
+      // If exit
       if (exit.x === x && exit.y === y) {
-        blockColour = 'blue';
+        fontColour = 'brown';
+        blockColour = 'white';
+        content = <FontAwesomeIcon
+            icon={faDoorOpen}
+            size="2x"
+        />
       }
       return (
         <td
@@ -60,8 +84,9 @@ export default function Game({
             height: '2em',
             background: blockColour,
             border,
-            color: 'white',
+            color: fontColour,
           }}
+          data-destructable={column.destructable}
         >
           <center>{content}</center>
         </td>

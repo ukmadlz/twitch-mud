@@ -102,6 +102,7 @@ const fillSingleBlanks = (layout) => {
 
 /**
  * Returns an integer representing a number from 1 to max.
+ *
  * @param {int} max Max number of options to return.
  * @returns {int} The number chosen.
  */
@@ -109,6 +110,7 @@ const getRandomInt = (max) => Math.ceil(Math.random() * max);
 
 /**
  * Searches the map for big blocks of walls. Will randomly keep a row or column of this block.
+ *
  * @param layout Current map layout.
  * @returns Updated layout.
  */
@@ -212,7 +214,7 @@ const selectExit = (layout) => {
   return exit;
 };
 
-export default (app, pathName, opts) => async (
+module.exports = (app, pathName, opts) => async (
   data,
   h,
 ) => {
