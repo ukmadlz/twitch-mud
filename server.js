@@ -17,7 +17,7 @@ app.prepare().then(async () => {
   // Game map
   server.route({
     method: 'GET',
-    path: '/map',
+    path: '/{user}/map',
     handler: GameMap(app),
   });
 

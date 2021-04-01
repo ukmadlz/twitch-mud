@@ -1,4 +1,4 @@
-const { knex, bookshelf } = require('./database');
+const { bookshelf } = require('./database');
 
 module.exports = bookshelf.model('Map',
   {

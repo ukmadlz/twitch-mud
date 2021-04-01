@@ -1,0 +1,5 @@
+name: "twitch-mud"
+tasks:
+  start:
+    command: node server.js
+    inboundUrl: http://localhost:3000

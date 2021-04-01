@@ -2,11 +2,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDoorOpen, faTree } from '@fortawesome/free-solid-svg-icons';
 import Axios from '../helpers/axios';
 
+// @TODO REMOVE ASAP
+const user = 'ukmadlz';
+
 /**
  *
  */
 export async function getStaticProps() {
-  const { data } = await Axios.get('http://localhost:3000/map');
+  const { data } = await Axios.get(`http://localhost:3000/${user}/map`);
   return {
     props: {
       ...data,
