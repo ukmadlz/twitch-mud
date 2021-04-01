@@ -1,3 +1,4 @@
+const { Model } = require('bookshelf');
 const Debug = require('../helpers/debug');
 const Map = require('./models/map');
 const MapGenerator = require('./models/mapgenerator');
@@ -6,53 +7,70 @@ module.exports = (app, pathName, opts) => async (
   { params },
   h,
 ) => {
+  // User settings
   const { user } = params;
-  // Check for an existing instace
+  // Defaults
+  let mapType = 'Village';
+  let mapFactor = 0;
+  let exit = {};
+  let layout = [];
+  // Check for an existing instance
   try {
-    const mapData = await new Map({
+    const mapExists = await new Map({
       user
-    }).count({
-      debug: true,
-    });
-    Debug.info(mapData);
+    }).count();
+    if (mapExists > 0) {
+
+    } else {
+      Debug.error('HERE WE ARE');
+      const mapGenerator = new MapGenerator();
+      const mapTypeChoice = mapGenerator.getRandomInt(3);
+      switch (mapTypeChoice) {
+        case 1:
+          mapType = 'Forest';
+          mapFactor = 0.1;
+          break;
+        case 2:
+          maptype = 'Village';
+          mapFactor = 0.3;
+          break;
+        case 3:
+        default:
+          mapType = 'Castle';
+          mapFactor = 0.8;
+      }
+      // Size of the game area
+      const gameSize = 20;
+      // Creates the initial layout
+      layout = await mapGenerator.generateLayout(gameSize, mapFactor);
+      try {
+        // Fill in tiny spaces
+        layout = await mapGenerator.fillSingleBlanks(layout);
+        // remove big blocks of wall
+        layout = await mapGenerator.deblock(layout);
+      } catch (e) {
+        Debug.error(e);
+      }
+    
+      // Add an exit
+      exit = mapGenerator.selectExit(layout);
+
+      // Save the map
+      try {
+        const mapObject = {
+          user,
+          map_type: mapType,
+          layout: { layout },
+          exit,
+        }
+        await new Map(mapObject).save();
+      } catch (e) {
+        Debug.error(e);
+      }
+    }
   } catch(e) {
     Debug.error(e);
   }
-  const mapGenerator = new MapGenerator();
-  let mapType = 'Village';
-  let mapFactor = 0;
-  const mapTypeChoice = mapGenerator.getRandomInt(3);
-  switch (mapTypeChoice) {
-    case 1:
-      mapType = 'Forest';
-      mapFactor = 0.1;
-      break;
-
-    case 2:
-      maptype = 'Village';
-      mapFactor = 0.3;
-      break;
-
-    case 3:
-    default:
-      mapType = 'Castle';
-      mapFactor = 0.8;
-  }
-  // Size of the game area
-  const gameSize = 20;
-  // Creates the initial layout
-  let layout = await mapGenerator.generateLayout(gameSize, mapFactor);
-  try {
-    // Fill in tiny spaces
-    layout = await mapGenerator.fillSingleBlanks(layout);
-    // remove big blocks of wall
-    layout = await mapGenerator.deblock(layout);
-  } catch (e) {
-    Debug.error(e);
-  }
-
-  // Add an exit
-  const exit = mapGenerator.selectExit(layout);
   return h.response({
     mapType,
     layout,

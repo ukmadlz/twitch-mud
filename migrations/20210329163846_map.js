@@ -9,7 +9,7 @@ exports.up = function (knex) {
           table.string('map_type', 255).notNullable();
           table.json('layout').notNullable();
           table.json('exit').notNullable();
-          table.timestamps();
+          table.timestamps(null, true);
         });
       }
     });
