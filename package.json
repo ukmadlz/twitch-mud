@@ -13,6 +13,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.34",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "@fortawesome/react-fontawesome": "^0.1.14",
+    "@hapi/boom": "^9.1.2",
     "@hapi/hapi": "^20.1.2",
     "axios": "^0.21.1",
     "bookshelf": "^1.2.0",

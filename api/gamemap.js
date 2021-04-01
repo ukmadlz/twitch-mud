@@ -1,4 +1,3 @@
-const { Model } = require('bookshelf');
 const Debug = require('../helpers/debug');
 const Map = require('./models/map');
 const MapGenerator = require('./models/mapgenerator');
@@ -27,7 +26,7 @@ module.exports = (app, pathName, opts) => async (
       exit = mapContents.get('exit');
       layout = mapContents.get('layout').layout;
     } else {
-      Debug.error('HERE WE ARE');
+      // Create map
       const mapGenerator = new MapGenerator();
       const mapTypeChoice = mapGenerator.getRandomInt(3);
       switch (mapTypeChoice) {

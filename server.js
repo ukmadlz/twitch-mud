@@ -12,13 +12,19 @@ const server = new Hapi.Server({
 
 // API Routes
 const GameMap = require('./api/gamemap');
+const JoinMap = require('./api/joinmap');
 
 app.prepare().then(async () => {
-  // Game map
+  // APIs
   server.route({
     method: 'GET',
     path: '/{user}/map',
     handler: GameMap(app),
+  });
+  server.route({
+    method: 'GET',
+    path: '/{user}/join',
+    handler: JoinMap(app),
   });
 
   // Next Specific Routes

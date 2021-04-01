@@ -215,4 +215,43 @@ module.exports = class MapGenerator {
     exit = cycleExit(exit);
     return exit;
   }
+
+  selectSafeStart(layout, exit) {
+    const generateXY = () => {
+      const innerMapSize = layout.length - 2;
+      const x = this.getRandomInt(innerMapSize);
+      const y = this.getRandomInt(innerMapSize);
+      return {
+        x,
+        y,
+      };
+    };
+    const checkAccess = (playerPosition) => {
+      const surrounding = this.getSurrounding(layout, playerPosition.x, playerPosition.y);
+      Debug.info('Check if in a wall');
+      Debug.info({ surrounding });
+      if (surrounding.wall) return false;
+      Debug.info('Check if exit');
+      Debug.info(exit);
+      if (exit.x === playerPosition.x && playerPosition.y) return false;
+      Debug.info('Check if too close to the exit');
+      const innerMapSize = layout.length - 2;
+      const maxRange = Math.floor(innerMapSize / 4);
+      Debug.info(playerPosition.x, (exit.x - maxRange), (exit.x + maxRange));
+      Debug.info(playerPosition.y, (exit.y - maxRange), (exit.y + maxRange));
+      const between = (x, min, max) => x >= min && x <= max;
+      if (between(playerPosition.x, (exit.x - maxRange), (exit.x + maxRange))
+       && between(playerPosition.y, (exit.y - maxRange), (exit.y + maxRange))) return false;
+      return true;
+    };
+    const cyclePlayerPosition = (playerPosition) => {
+      if (!checkAccess(playerPosition)) {
+        return cyclePlayerPosition(generateXY());
+      }
+      return playerPosition;
+    };
+    let playerPosition = generateXY();
+    playerPosition = cyclePlayerPosition(playerPosition);
+    return playerPosition;
+  }
 };
