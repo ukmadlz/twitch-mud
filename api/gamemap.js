@@ -20,7 +20,12 @@ module.exports = (app, pathName, opts) => async (
       user
     }).count();
     if (mapExists > 0) {
-
+      const mapContents = await new Map({
+        user
+      }).fetch();
+      mapType = mapContents.get('map_type'),
+      exit = mapContents.get('exit');
+      layout = mapContents.get('layout').layout;
     } else {
       Debug.error('HERE WE ARE');
       const mapGenerator = new MapGenerator();
