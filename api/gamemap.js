@@ -28,7 +28,7 @@ module.exports = (app, pathName, opts) => async (
     } else {
       // Create map
       const mapGenerator = new MapGenerator();
-      const mapTypeChoice = mapGenerator.getRandomInt(3);
+      const mapTypeChoice = MapGenerator.getRandomInt(3);
       switch (mapTypeChoice) {
         case 1:
           mapType = 'Forest';

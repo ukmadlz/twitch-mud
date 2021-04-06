@@ -107,7 +107,7 @@ module.exports = class MapGenerator {
    * @param {int} max Max number of options to return.
    * @returns {int} The number chosen.
    */
-  getRandomInt(max) { return Math.ceil(Math.random() * max); }
+  static getRandomInt(max) { return Math.ceil(Math.random() * max); }
 
   /**
    * Searches the map for big blocks of walls. Will randomly keep a row or column of this block.
@@ -149,10 +149,10 @@ module.exports = class MapGenerator {
           if (maxAcross < 999 && maxAcross > 1 && goingDown > 1) {
             Debug.info('Found block:', x, y, maxAcross, goingDown);
             // choose whether to keep an x or y
-            let choice = this.getRandomInt(2);
+            let choice = MapGenerator.getRandomInt(2);
             if (choice === 1) {
               // keep a single column
-              choice = this.getRandomInt(maxAcross);
+              choice = MapGenerator.getRandomInt(maxAcross);
               Debug.info('For block', maxAcross, goingDown, 'at', x, y, 'keeping column', choice);
               for (let nukerX = 0; nukerX < maxAcross; nukerX += 1) {
                 for (let nukerY = 0; nukerY < goingDown; nukerY += 1) {
@@ -165,7 +165,7 @@ module.exports = class MapGenerator {
               }
             } else {
               // keep a single row
-              choice = this.getRandomInt(goingDown);
+              choice = MapGenerator.getRandomInt(goingDown);
               Debug.info('For block', maxAcross, goingDown, 'at', x, y, 'keeping row', choice);
               for (let nukerX = 0; nukerX < maxAcross; nukerX += 1) {
                 for (let nukerY = 0; nukerY < goingDown; nukerY += 1) {
@@ -190,8 +190,8 @@ module.exports = class MapGenerator {
   selectExit(layout) {
     const generateXY = () => {
       const innerMapSize = layout.length - 2;
-      const x = this.getRandomInt(innerMapSize);
-      const y = this.getRandomInt(innerMapSize);
+      const x = MapGenerator.getRandomInt(innerMapSize);
+      const y = MapGenerator.getRandomInt(innerMapSize);
       return {
         x,
         y,
@@ -219,8 +219,8 @@ module.exports = class MapGenerator {
   selectSafeStart(layout, exit) {
     const generateXY = () => {
       const innerMapSize = layout.length - 2;
-      const x = this.getRandomInt(innerMapSize);
-      const y = this.getRandomInt(innerMapSize);
+      const x = MapGenerator.getRandomInt(innerMapSize);
+      const y = MapGenerator.getRandomInt(innerMapSize);
       return {
         x,
         y,
