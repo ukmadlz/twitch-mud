@@ -1,6 +1,8 @@
+import Ably from 'ably/promises';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDoorOpen, faTree } from '@fortawesome/free-solid-svg-icons';
 import Axios from '../helpers/axios';
+import Debug from '../helpers/debug';
 
 // @TODO REMOVE ASAP
 const user = 'ukmadlz';
@@ -27,6 +29,13 @@ export async function getStaticProps() {
 export default function Game({
   mapType, layout, exit, monsters,
 }) {
+  const channelName = `game-${user}`;
+  const ably = new Ably.Realtime.Promise({ authUrl: '/api/ablyTokenRequest' });
+  const channel = ably.channels.get(channelName);
+  channel.subscribe((message) => {
+    Debug.log('Received: ', message);
+  });
+
   const max = layout.length;
   const completeMap = layout.map((row, y) => {
     const completeRow = row.map((column, x) => {

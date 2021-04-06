@@ -13,6 +13,7 @@ const server = new Hapi.Server({
 // API Routes
 const GameMap = require('./api/gamemap');
 const JoinMap = require('./api/joinmap');
+const AblyTokenRequest = require('./api/ablyTokenRequest');
 
 app.prepare().then(async () => {
   // APIs
@@ -25,6 +26,11 @@ app.prepare().then(async () => {
     method: 'GET',
     path: '/{user}/join',
     handler: JoinMap(app),
+  });
+  server.route({
+    method: 'GET',
+    path: '/api/ablyTokenRequest',
+    handler: AblyTokenRequest,
   });
 
   // Next Specific Routes

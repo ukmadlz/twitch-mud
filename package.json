@@ -15,6 +15,7 @@
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@hapi/boom": "^9.1.2",
     "@hapi/hapi": "^20.1.2",
+    "ably": "^1.2.8",
     "axios": "^0.21.1",
     "bookshelf": "^1.2.0",
     "cross-env": "^5.2.0",
