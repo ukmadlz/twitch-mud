@@ -6,8 +6,8 @@
     "dev": "node server.js",
     "build": "next build",
     "start": "cross-env NODE_ENV=production node server.js",
-    "lint": "eslint --color ./api/**/* ./helpers/**/* ./migrations/**/* ./pages/**/* ./*.js",
-    "lint:fix": "eslint --color --fix ./api/**/* ./helpers/**/* ./migrations/**/* ./pages/**/* ./*.js"
+    "lint": "eslint --color ./api/**/* ./helpers/**/* ./migrations/**/* ./pages/**/* ./components/**/* ./*.js",
+    "lint:fix": "eslint --color --fix ./api/**/* ./helpers/**/* ./migrations/**/* ./components/**/* ./pages/**/* ./*.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.34",
@@ -24,6 +24,7 @@
     "knex": "^0.95.2",
     "next": "latest",
     "pg": "^8.5.1",
+    "prop-types": "^15.7.2",
     "react": "^16.7.0",
     "react-dom": "^16.7.0"
   },

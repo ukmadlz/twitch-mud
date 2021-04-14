@@ -16,13 +16,13 @@ module.exports = (app, pathName, opts) => async (
   // Check for an existing instance
   try {
     const mapExists = await new Map({
-      user
+      user,
     }).count();
     if (mapExists > 0) {
       const mapContents = await new Map({
-        user
+        user,
       }).fetch();
-      mapType = mapContents.get('map_type'),
+      mapType = mapContents.get('map_type');
       exit = mapContents.get('exit');
       layout = mapContents.get('layout').layout;
     } else {
@@ -44,7 +44,7 @@ module.exports = (app, pathName, opts) => async (
           mapFactor = 0.8;
       }
       // Size of the game area
-      const gameSize = 20;
+      const gameSize = 30;
       // Creates the initial layout
       layout = await mapGenerator.generateLayout(gameSize, mapFactor);
       try {
@@ -55,7 +55,7 @@ module.exports = (app, pathName, opts) => async (
       } catch (e) {
         Debug.error(e);
       }
-    
+
       // Add an exit
       exit = mapGenerator.selectExit(layout);
 
