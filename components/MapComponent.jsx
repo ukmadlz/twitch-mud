@@ -3,7 +3,7 @@ import Ably from 'ably/promises';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDoorOpen, faTree } from '@fortawesome/free-solid-svg-icons';
+import { faDoorOpen, faTree, faUserShield } from '@fortawesome/free-solid-svg-icons';
 import Axios from '../helpers/axios';
 import Debug from '../helpers/debug';
 
@@ -15,6 +15,7 @@ class MapComponent extends React.Component {
       exit: {},
       monsters: [],
       mapType: '',
+      players: {},
     };
     this.channelName = `game-${props.user}`;
     this.ably = new Ably.Realtime.Promise({ authUrl: '/api/ablyTokenRequest' });
@@ -39,7 +40,19 @@ class MapComponent extends React.Component {
     });
     // Listen for player action changes
     this.channel.subscribe((message) => {
-      Debug.log('Received: ', message);
+      const { data } = message;
+      if (data) {
+        const {
+          player,
+          playerPosition,
+        } = JSON.parse(data);
+        const newPlayers = this.state.players;
+        console.log(newPlayers);
+        newPlayers[player] = playerPosition;
+        this.setState({
+          players: newPlayers,
+        });
+      }
     });
   }
 
@@ -49,6 +62,7 @@ class MapComponent extends React.Component {
       exit,
       monsters,
       mapType,
+      players,
     } = this.state;
     const max = layout.length;
     const completeMap = layout.map((row, y) => {
@@ -102,6 +116,18 @@ class MapComponent extends React.Component {
           content = (
             <FontAwesomeIcon
               icon={faDoorOpen}
+              size="2x"
+            />
+          );
+        }
+        // If player!
+        const playersOnSpace = Object.keys(players)
+          .filter((playerName) => (players[playerName].x === x && players[playerName].y === y));
+        if (playersOnSpace.length) {
+          fontColour = 'blue';
+          content = (
+            <FontAwesomeIcon
+              icon={faUserShield}
               size="2x"
             />
           );
