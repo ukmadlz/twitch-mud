@@ -15,6 +15,7 @@
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@hapi/bell": "^12.2.0",
     "@hapi/boom": "^9.1.2",
+    "@hapi/cookie": "^11.0.2",
     "@hapi/hapi": "^20.1.2",
     "ably": "^1.2.8",
     "axios": "^0.21.1",

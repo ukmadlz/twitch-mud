@@ -45,10 +45,11 @@ class MapComponent extends React.Component {
         const {
           player,
           playerPosition,
+          image,
         } = JSON.parse(data);
         const newPlayers = this.state.players;
         console.log(newPlayers);
-        newPlayers[player] = playerPosition;
+        newPlayers[player] = { playerPosition, image };
         this.setState({
           players: newPlayers,
         });
@@ -122,15 +123,20 @@ class MapComponent extends React.Component {
         }
         // If player!
         const playersOnSpace = Object.keys(players)
-          .filter((playerName) => (players[playerName].x === x && players[playerName].y === y));
+          .filter((playerName) => (players[playerName].playerPosition.x === x && players[playerName].playerPosition.y === y));
         if (playersOnSpace.length) {
-          fontColour = 'blue';
-          content = (
-            <FontAwesomeIcon
-              icon={faUserShield}
-              size="2x"
-            />
-          );
+          const singlePlayerOnSpace = playersOnSpace.pop();
+          if (players[singlePlayerOnSpace].image) {
+            content = (<img alt={singlePlayerOnSpace} src={players[singlePlayerOnSpace].image} />);
+          } else {
+            fontColour = 'blue';
+            content = (
+              <FontAwesomeIcon
+                icon={faUserShield}
+                size="2x"
+              />
+            );
+          }
         }
         return (
           <td

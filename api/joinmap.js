@@ -3,14 +3,15 @@ const Boom = require('@hapi/boom');
 const Debug = require('../helpers/debug');
 const Map = require('./models/map');
 const MapGenerator = require('./models/mapgenerator');
+const Users = require('./models/users');
 
 const realtime = new Ably.Realtime(process.env.ABLY_API_KEY);
 
 // @TODO: Use the user session data after TWITCH integration
-const player = 'ukmadlz';
+const twitchId = '109561494';
 
 module.exports = (app, pathName, opts) => async (
-  { params },
+  { params, auth },
   h,
 ) => {
   // User settings
@@ -19,9 +20,15 @@ module.exports = (app, pathName, opts) => async (
     const mapExists = await new Map({
       user,
     }).count();
-    if (mapExists > 0) {
+    const userExists = await new Users({
+      twitch_id: twitchId,
+    }).count();
+    if (mapExists > 0 && userExists > 0) {
       const mapContents = await new Map({
         user,
+      }).fetch();
+      const userContent = await new Users({
+        twitch_id: twitchId,
       }).fetch();
       const exit = mapContents.get('exit');
       const { layout } = mapContents.get('layout');
@@ -30,7 +37,8 @@ module.exports = (app, pathName, opts) => async (
       const channel = realtime.channels.get(`game-${user}`);
       channel.publish('joining', JSON.stringify({
         map: user,
-        player,
+        player: userContent.get('twitch_name'),
+        image: userContent.get('profile_image_url'),
         playerPosition,
       }));
       return h.response(playerPosition);
