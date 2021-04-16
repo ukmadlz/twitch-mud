@@ -28,6 +28,7 @@ exports.up = (knex) => knex.schema
           table.timestamps(null, true);
         });
       }
+      return true;
     }));
 
 exports.down = (knex) => knex.schema
