@@ -127,14 +127,16 @@ class MapComponent extends React.Component {
         if (playersOnSpace.length) {
           const singlePlayerOnSpace = playersOnSpace.pop();
           if (players[singlePlayerOnSpace].image) {
-            content = (<img
-              style={{
-                width: '2em',
-                height: '2em',
-              }}
-              alt={singlePlayerOnSpace}
-              src={players[singlePlayerOnSpace].image}
-            />);
+            content = (
+              <img
+                style={{
+                  width: '2em',
+                  height: '2em',
+                }}
+                alt={singlePlayerOnSpace}
+                src={players[singlePlayerOnSpace].image}
+              />
+            );
           } else {
             fontColour = 'blue';
             content = (
