@@ -25,7 +25,7 @@ class MapComponent extends React.Component {
   async componentDidMount() {
     const { user } = this.props;
     // Load the map
-    const { data } = await Axios.get(`http://localhost:3000/${user}/map`);
+    const { data } = await Axios.get(`/${user}/map`);
     const {
       layout,
       exit,
@@ -123,7 +123,8 @@ class MapComponent extends React.Component {
         }
         // If player!
         const playersOnSpace = Object.keys(players)
-          .filter((playerName) => (players[playerName].playerPosition.x === x && players[playerName].playerPosition.y === y));
+          .filter((playerName) => (players[playerName].playerPosition.x === x
+            && players[playerName].playerPosition.y === y));
         if (playersOnSpace.length) {
           const singlePlayerOnSpace = playersOnSpace.pop();
           if (players[singlePlayerOnSpace].image) {

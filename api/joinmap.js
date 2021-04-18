@@ -7,13 +7,11 @@ const Users = require('./models/users');
 
 const realtime = new Ably.Realtime(process.env.ABLY_API_KEY);
 
-// @TODO: Use the user session data after TWITCH integration
-const twitchId = '109561494';
-
 module.exports = (app, pathName, opts) => async (
   { params, auth },
   h,
 ) => {
+  const { credentials } = auth;
   // User settings
   const { user } = params;
   try {
@@ -21,14 +19,14 @@ module.exports = (app, pathName, opts) => async (
       user,
     }).count();
     const userExists = await new Users({
-      twitch_id: twitchId,
+      id: credentials.id,
     }).count();
     if (mapExists > 0 && userExists > 0) {
       const mapContents = await new Map({
         user,
       }).fetch();
       const userContent = await new Users({
-        twitch_id: twitchId,
+        id: credentials.id,
       }).fetch();
       const exit = mapContents.get('exit');
       const { layout } = mapContents.get('layout');

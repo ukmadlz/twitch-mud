@@ -7,9 +7,10 @@ import Head from 'next/head';
  * @returns The complete head
  */
 export default function HeadComponent() {
+  const webMonetisationToken = '$ilp.uphold.com/rYJjQZggnQQ6';
   return (
     <Head>
-      <meta name="monetization" content={process.env.WEB_MONETISATION_TOKEN} />
+      <meta name="monetization" content={webMonetisationToken} />
     </Head>
   );
 }

@@ -7,17 +7,14 @@ module.exports = async (server) => {
   // Register Bell
   await server.register(Bell);
   await server.register(Cookie);
-  // server.auth.strategy('session', 'cookie', {
-  //   cookie: {
-  //     cookie: 'sid-example',
-  //     password: process.env.TWITCH_COOKIE,
-  //     isSecure: process.env.NODE_ENV === 'production',
-  //   },
-  //   redirectTo: '/login',
-  //   validateFunc: async (request, sesson) => {
-  //     return { valid: true };
-  //   },
-  // });
+  server.auth.strategy('session', 'cookie', {
+    cookie: {
+      password: process.env.TWITCH_COOKIE,
+      isSecure: process.env.NODE_ENV === 'production',
+    },
+    redirectTo: '/login',
+    validateFunc: async (request, sesson) => ({ valid: true }),
+  });
   server.auth.strategy('twitch', 'bell', {
     // implementation is broken in @hapi/bell, Client-ID header must be included in each request
     provider: {
@@ -44,6 +41,7 @@ module.exports = async (server) => {
     clientSecret: process.env.TWITCH_CLIENT_SECRET,
     isSecure: process.env.NODE_ENV === 'production',
   });
+  server.auth.default('session');
 
   // APIs
   server.route({
@@ -68,15 +66,32 @@ module.exports = async (server) => {
         const userExists = await new Users({
           twitch_id: id,
         }).count();
+        let userData = {};
         if (userExists < 1) {
-          await new Users({
+          userData = await new Users({
             twitch_name: login,
             display_name,
             profile_image_url,
             twitch_id: id,
           }).save();
+        } else {
+          userData = await new Users({
+            twitch_id: id,
+          }).fetch();
         }
+        request.cookieAuth.set(userData.toJSON());
         return h.redirect('/game');
+      },
+    },
+  });
+  // Logout
+  server.route({
+    method: ['GET', 'POST'],
+    path: '/logout',
+    options: {
+      handler: (request, h) => {
+        request.cookieAuth.clear();
+        return h.redirect('/');
       },
     },
   });
