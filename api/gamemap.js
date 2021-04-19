@@ -1,6 +1,7 @@
 const Debug = require('../helpers/debug');
 const Map = require('./models/map');
 const MapGenerator = require('./models/mapgenerator');
+const Players = require('./models/players');
 
 module.exports = (app, pathName, opts) => async (
   { params },
@@ -13,6 +14,7 @@ module.exports = (app, pathName, opts) => async (
   let mapFactor = 0;
   let exit = {};
   let layout = [];
+  let players = {};
   // Check for an existing instance
   try {
     const mapExists = await new Map({
@@ -25,6 +27,26 @@ module.exports = (app, pathName, opts) => async (
       mapType = mapContents.get('map_type');
       exit = mapContents.get('exit');
       layout = mapContents.get('layout').layout;
+      try {
+        const playersContent = await new Players({
+          map_id: mapContents.get('id'),
+        }).fetchAll({
+          withRelated: ['users'],
+        });
+        await playersContent.map((player) => {
+          const {
+            position,
+            users,
+          } = player.toJSON();
+          players[users.twitch_name] = {
+            playerPosition: position,
+            image: users.profile_image_url,
+          };
+          return true;
+        });
+      } catch (e) {
+        Debug.error(e);
+      }
     } else {
       // Create map
       const mapGenerator = new MapGenerator();
@@ -72,13 +94,14 @@ module.exports = (app, pathName, opts) => async (
         Debug.error(e);
       }
     }
-  } catch(e) {
+  } catch (e) {
     Debug.error(e);
   }
   return h.response({
     mapType,
     layout,
     monsters: [],
+    players,
     exit,
   });
 };

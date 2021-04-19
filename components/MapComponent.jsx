@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDoorOpen, faTree, faUserShield } from '@fortawesome/free-solid-svg-icons';
 import Axios from '../helpers/axios';
-import Debug from '../helpers/debug';
 
 class MapComponent extends React.Component {
   constructor(props) {
@@ -31,12 +30,14 @@ class MapComponent extends React.Component {
       exit,
       monsters,
       mapType,
+      players,
     } = data;
     this.setState({
       layout,
       exit,
       monsters,
       mapType,
+      players,
     });
     // Listen for player action changes
     this.channel.subscribe((message) => {
@@ -48,7 +49,6 @@ class MapComponent extends React.Component {
           image,
         } = JSON.parse(data);
         const newPlayers = this.state.players;
-        console.log(newPlayers);
         newPlayers[player] = { playerPosition, image };
         this.setState({
           players: newPlayers,
