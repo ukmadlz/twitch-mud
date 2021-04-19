@@ -4,7 +4,7 @@ import Head from 'next/head';
 /**
  * Header for the site
  *
- * @returns The complete head
+ * @returns {Head} The complete head
  */
 export default function HeadComponent() {
   const webMonetisationToken = '$ilp.uphold.com/rYJjQZggnQQ6';
