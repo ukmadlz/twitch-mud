@@ -15,6 +15,8 @@ module.exports = async (server) => {
     redirectTo: '/login',
     validateFunc: async (request, sesson) => ({ valid: true }),
   });
+  const redirectUri = process.env.TWITCH_CALLBACK || `http://localhost:${(parseInt(process.env.PORT, 10) || 3000)}/login`
+  Debug.log(redirectUri);
   server.auth.strategy('twitch', 'bell', {
     // implementation is broken in @hapi/bell, Client-ID header must be included in each request
     provider: {
@@ -40,6 +42,7 @@ module.exports = async (server) => {
     clientId: process.env.TWITCH_CLIENT_ID,
     clientSecret: process.env.TWITCH_CLIENT_SECRET,
     isSecure: false,
+    location: redirectUri,
   });
   server.auth.default('session');
 
