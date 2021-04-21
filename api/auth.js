@@ -10,7 +10,7 @@ module.exports = async (server) => {
   server.auth.strategy('session', 'cookie', {
     cookie: {
       password: process.env.TWITCH_COOKIE,
-      isSecure: process.env.NODE_ENV === 'production',
+      isSecure: false,
     },
     redirectTo: '/login',
     validateFunc: async (request, sesson) => ({ valid: true }),
@@ -39,7 +39,7 @@ module.exports = async (server) => {
     password: process.env.TWITCH_COOKIE,
     clientId: process.env.TWITCH_CLIENT_ID,
     clientSecret: process.env.TWITCH_CLIENT_SECRET,
-    isSecure: process.env.NODE_ENV === 'production',
+    isSecure: false,
   });
   server.auth.default('session');
 
