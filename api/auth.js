@@ -42,7 +42,6 @@ module.exports = async (server) => {
     clientId: process.env.TWITCH_CLIENT_ID,
     clientSecret: process.env.TWITCH_CLIENT_SECRET,
     isSecure: false,
-    location: redirectUri,
   });
   server.auth.default('session');
 

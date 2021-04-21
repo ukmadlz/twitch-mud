@@ -66,7 +66,7 @@ module.exports = (app, pathName, opts) => async (
           mapFactor = 0.8;
       }
       // Size of the game area
-      const gameSize = 30;
+      const gameSize = 20;
       // Creates the initial layout
       layout = await mapGenerator.generateLayout(gameSize, mapFactor);
       try {
