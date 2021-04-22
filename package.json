@@ -5,6 +5,7 @@
     "watch": "NODE_ENV=development nodemon -x \"npm run dev\" -w ./helpers -w ./api -w server.js",
     "dev": "node server.js",
     "build": "next build",
+    "migrate": "knex migrate:latest",
     "postinstall": "npm run build",
     "start": "cross-env NODE_ENV=production node server.js",
     "lint": "eslint --color ./api/**/* ./helpers/**/* ./migrations/**/* ./pages/**/* ./components/**/* ./*.js",
