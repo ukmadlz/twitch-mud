@@ -26,6 +26,7 @@ module.exports = async (server) => {
       headers: {
         'Client-ID': process.env.TWITCH_CLIENT_ID,
       },
+      location: process.env.TWITCH_CALLBACK,
       scope: ['user:read:email'],
       scopeSeparator: ' ',
       async profile(credentials, params, get) {
