@@ -4,12 +4,10 @@ const Debug = require('./helpers/debug');
 const { nextHandlerWrapper } = require('./next-wrapper');
 
 const port = parseInt(process.env.PORT, 10) || 3000;
-const host = process.env.HOSTNAME || 'localhost';
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const server = new Hapi.Server({
   port,
-  host,
 });
 
 // API Routes
