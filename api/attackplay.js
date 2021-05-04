@@ -32,11 +32,11 @@ module.exports = (app, pathName, opts) => async (
     const userExists = await new Users({
       id: credentials.id,
     }).count();
+    let playerPosition = {};
     if (mapExists > 0 && userExists > 0) {
       const mapContents = await new Map({
         user,
       }).fetch();
-      let playerPosition = {};
       try {
         const playerContent = await new Players({
           map_id: mapContents.get('id'),
@@ -45,6 +45,7 @@ module.exports = (app, pathName, opts) => async (
           withRelated: ['users'],
         });
         const { position } = playerContent.toJSON();
+        playerPosition = position;
         const mapGenerator = new MapGenerator();
         const { layout } = mapContents.get('layout');
         const surroundings = mapGenerator.getSurrounding(layout, position.x, position.y);
@@ -66,28 +67,33 @@ module.exports = (app, pathName, opts) => async (
             Debug.error('Somehow no direction made it through');
         }
         // Check we can go to the block
-        if (!nextBlock.wall) {
+        if (nextBlock.wall && nextBlock.destructable) {
           const { x, y } = nextBlock;
-          playerPosition = {
-            x,
-            y,
-          };
-          await new Players({
-            id: playerContent.get('id'),
-            position: playerPosition,
-          }).save();
           const channel = realtime.channels.get(`game-${user}`);
           const {
             users,
           } = playerContent.toJSON();
-          await channel.publish('moving', JSON.stringify({
+          const newLayout = layout;
+          newLayout[y][x].wall = false;
+          newLayout[y][x].destructable = false;
+          newLayout[y][x].nuke = true;
+          await Map.forge({
+            id: mapContents.get('id'),
+          }).save({
+            layout: { layout: newLayout },
+          }, {
+            method: 'update',
+            patch: true,
+            debug: true,
+          });
+          await channel.publish('attacking', JSON.stringify({
             map: user,
             player: users.twitch_name,
-            image: users.profile_image_url,
             playerPosition,
+            block: mapGenerator.getSurrounding(newLayout, x, y),
           }));
         } else {
-          return Boom.badRequest('Invalid move');
+          return Boom.badRequest('Nothing to attack');
         }
       } catch (e) {
         Debug.error(e);

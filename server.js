@@ -14,6 +14,7 @@ const server = new Hapi.Server({
 const GameMap = require('./api/gamemap');
 const JoinMap = require('./api/joinmap');
 const MovePlayer = require('./api/moveplay');
+const AttackPlayer = require('./api/attackplay');
 const AblyTokenRequest = require('./api/ablyTokenRequest');
 const Auth = require('./api/auth');
 
@@ -33,6 +34,11 @@ app.prepare().then(async () => {
     method: ['GET', 'POST'],
     path: '/{user}/move/{direction}',
     handler: MovePlayer(app),
+  });
+  server.route({
+    method: ['GET', 'POST'],
+    path: '/{user}/attack/{direction}',
+    handler: AttackPlayer(app),
   });
   server.route({
     method: 'GET',

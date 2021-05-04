@@ -41,18 +41,28 @@ class MapComponent extends React.Component {
     });
     // Listen for player action changes
     this.channel.subscribe((message) => {
-      const { data } = message;
+      console.log(message);
+      const { data, name } = message;
       if (data) {
-        const {
-          player,
-          playerPosition,
-          image,
-        } = JSON.parse(data);
-        const newPlayers = this.state.players;
-        newPlayers[player] = { playerPosition, image };
-        this.setState({
-          players: newPlayers,
-        });
+        if (name === 'joining' || name === 'moving') {
+          const {
+            player,
+            playerPosition,
+            image,
+          } = JSON.parse(data);
+          const newPlayers = this.state.players;
+          newPlayers[player] = { playerPosition, image };
+          this.setState({
+            players: newPlayers,
+          });
+        } else if (name === 'attacking') {
+          const { block } = JSON.parse(data);
+          const newLayout = this.state.layout;
+          newLayout[block.y][block.x] = block;
+          this.setState({
+            layout: newLayout,
+          });
+        }
       }
     });
   }
