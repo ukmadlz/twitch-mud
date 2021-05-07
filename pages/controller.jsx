@@ -14,7 +14,7 @@ export default function Controller() {
   return (
     <div>
       <HeadComponent />
-      <MapComponent user={user} />
+      <MapComponent user={user} player={user} fov={3} />
       <ControllerComponent user={user} />
     </div>
   );

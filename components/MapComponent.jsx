@@ -41,7 +41,6 @@ class MapComponent extends React.Component {
     });
     // Listen for player action changes
     this.channel.subscribe((message) => {
-      console.log(message);
       const { data, name } = message;
       if (data) {
         if (name === 'joining' || name === 'moving') {
@@ -68,21 +67,35 @@ class MapComponent extends React.Component {
   }
 
   render() {
+    const { fov, player } = this.props;
     const {
-      layout,
       exit,
       monsters,
       mapType,
       players,
     } = this.state;
+    let {
+      layout,
+    } = this.state;
     const max = layout.length;
+    // If FOV applied, shink the map
+    let minY = 0;
+    let minX = 0;
+    if (fov && player && players[player]) {
+      const playerCurrentPosition = players[player].playerPosition;
+      minY = playerCurrentPosition.y - fov > 0 ? playerCurrentPosition.y - fov : 0;
+      const maxY = playerCurrentPosition.y + fov < max ? playerCurrentPosition.y + fov : max;
+      minX = playerCurrentPosition.x - fov > 0 ? playerCurrentPosition.x - fov : 0;
+      const maxX = playerCurrentPosition.x + fov < max ? playerCurrentPosition.x + fov : max;
+      layout = layout.slice(minY, maxY).map((row) => row.slice(minX, maxX));
+    }
     const completeMap = layout.map((row, y) => {
       const completeRow = row.map((column, x) => {
         let content;
-        if (y === 0) content = x;
-        if (x === 0) content = y;
+        if (y === 0) content = (minX + x);
+        if (x === 0) content = (minY + y);
         let border = '';
-        let blockColour = ((column.wall) ? 'black' : 'white');
+        let blockColour = ((column.wall || y === 0 || x === 0) ? 'black' : 'white');
         let fontColour = 'white';
 
         if (x !== 0 && x !== max - 1 && y !== 0 && y !== max - 1) {
@@ -133,8 +146,8 @@ class MapComponent extends React.Component {
         }
         // If player!
         const playersOnSpace = Object.keys(players)
-          .filter((playerName) => (players[playerName].playerPosition.x === x
-            && players[playerName].playerPosition.y === y));
+          .filter((playerName) => (players[playerName].playerPosition.x === (minX + x)
+            && players[playerName].playerPosition.y === (minY + y)));
         if (playersOnSpace.length) {
           const singlePlayerOnSpace = playersOnSpace.pop();
           if (players[singlePlayerOnSpace].image) {
@@ -191,6 +204,8 @@ class MapComponent extends React.Component {
 
 MapComponent.propTypes = {
   user: PropTypes.string.isRequired,
+  fov: PropTypes.number,
+  player: PropTypes.string,
 };
 
 export default MapComponent;
