@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "watch": "NODE_ENV=development nodemon -x \"npm run dev\" -w ./helpers -w ./api -w server.js",
-    "dev": "node server.js",
+    "dev": "nodemon server.js",
     "build": "next build",
     "migrate": "knex migrate:latest",
     "postinstall": "npm run build",
