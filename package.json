@@ -5,6 +5,7 @@
     "watch": "NODE_ENV=development nodemon -x \"npm run dev\" -w ./helpers -w ./api -w server.js",
     "dev": "nodemon server.js",
     "build": "next build",
+    "heroku-build": "npm run build && npm run migrate",
     "migrate": "knex migrate:latest",
     "postinstall": "npm run build",
     "start": "cross-env NODE_ENV=production node server.js",
