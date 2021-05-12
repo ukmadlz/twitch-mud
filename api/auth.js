@@ -40,6 +40,7 @@ module.exports = async (server) => {
     clientId: process.env.TWITCH_CLIENT_ID,
     clientSecret: process.env.TWITCH_CLIENT_SECRET,
     isSecure: false,
+    location: process.env.TWITCH_CALLBACK,
   });
   server.auth.default('session');
 
