@@ -19,6 +19,9 @@ export default function Controller() {
     </div>
   );
 }
+/**
+ *
+ */
 export async function getServerSideProps() {
   return {
     props: {
