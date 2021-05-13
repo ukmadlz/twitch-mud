@@ -1,7 +1,8 @@
 const next = require('next');
 const Hapi = require('@hapi/hapi');
+const pino = require('hapi-pino');
 const Debug = require('./helpers/debug');
-const { nextHandlerWrapper } = require('./next-wrapper');
+const { nextHandlerWrapper, pathWrapper } = require('./next-wrapper');
 
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== 'production';
@@ -20,14 +21,14 @@ const Auth = require('./api/auth');
 
 app.prepare().then(async () => {
   await server.register({
-    plugin: require('hapi-pino'),
+    plugin: pino,
     options: {
       prettyPrint: process.env.NODE_ENV !== 'production',
       // Redact Authorization headers, see https://getpino.io/#/docs/redaction
       redact: ['req.headers.authorization'],
       mergeHapiLogData: true,
-    }
-  })
+    },
+  });
   await Auth(server);
   server.route({
     method: 'GET',

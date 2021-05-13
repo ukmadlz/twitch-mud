@@ -56,7 +56,7 @@ module.exports = (app, pathName, opts) => async (
           playerPosition,
         }));
       }
-      return h.response(playerPosition);
+      return h.redirect(`/${user}/controller`);
     }
   } catch (e) {
     Debug.error(e);
