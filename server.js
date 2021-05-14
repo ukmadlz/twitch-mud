@@ -21,15 +21,15 @@ const AblyTokenRequest = require('./api/ablyTokenRequest');
 const Auth = require('./api/auth');
 
 app.prepare().then(async () => {
-  // await server.register({
-  //   plugin: pino,
-  //   options: {
-  //     prettyPrint: false,
-  //     // Redact Authorization headers, see https://getpino.io/#/docs/redaction
-  //     redact: ['req.headers.authorization'],
-  //     mergeHapiLogData: true,
-  //   },
-  // });
+  await server.register({
+    plugin: pino,
+    options: {
+      prettyPrint: false,
+      // Redact Authorization headers, see https://getpino.io/#/docs/redaction
+      redact: ['req.headers.authorization'],
+      mergeHapiLogData: true,
+    },
+  });
   await Auth(server);
   server.route({
     method: 'GET',
