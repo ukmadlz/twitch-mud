@@ -65,24 +65,21 @@ module.exports = async (server) => {
           display_name,
           profile_image_url,
         } = request.auth.credentials.profile;
-        const userExists = await new Users({
-          twitch_id: id,
-        }).count();
-        let userData = {};
-        console.log(userExists);
-        if (userExists < 1) {
-          userData = await new Users({
+        try {
+          const userData = await new Users({
+            twitch_id: 0,
+          }).fetch();
+          request.cookieAuth.set(userData.toJSON());
+        } catch (error) {
+          Debug.log(error);
+          const userData = await new Users({
             twitch_name: login,
             display_name,
             profile_image_url,
             twitch_id: id,
           }).save();
-        } else {
-          userData = await new Users({
-            twitch_id: id,
-          }).fetch();
+          request.cookieAuth.set(userData.toJSON());
         }
-        request.cookieAuth.set(userData.toJSON());
         return h.redirect(`/${user}/game`);
       },
     },
