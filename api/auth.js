@@ -54,6 +54,7 @@ module.exports = async (server) => {
         strategy: 'twitch',
       },
       handler: async (request, h) => {
+        const user = 'ukmadlz';
         if (!request.auth.isAuthenticated) {
           Debug.error(request.auth.error);
           return `Authentication failed due to: ${request.auth.error.message}`;
@@ -81,7 +82,7 @@ module.exports = async (server) => {
           }).fetch();
         }
         request.cookieAuth.set(userData.toJSON());
-        return h.redirect('/game');
+        return h.redirect(`/${user}/game`);
       },
     },
   });
