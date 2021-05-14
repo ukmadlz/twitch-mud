@@ -1,7 +1,10 @@
 const nextHandlerWrapper = (app) => {
   const handler = app.getRequestHandler();
-  return async ({ raw, url, query }, h) => {
+  return async ({
+    raw, url, query, auth,
+  }, h) => {
     url.query = query;
+    raw.req.auth = auth;
     await handler(raw.req, raw.res, url);
     return h.close;
   };

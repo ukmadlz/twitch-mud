@@ -8,13 +8,13 @@ import ControllerComponent from '../../components/ControllerComponent';
  *
  * @returns A full copy the current game
  */
-export default function Controller() {
+export default function Controller({ player }) {
   const router = useRouter();
   const { user } = router.query;
   return (
     <div>
       <HeadComponent />
-      <MapComponent user={user} player={user} fov={3} />
+      <MapComponent user={user} player={player} fov={3} />
       <ControllerComponent user={user} />
     </div>
   );
@@ -22,9 +22,12 @@ export default function Controller() {
 /**
  *
  */
-export async function getServerSideProps() {
+export async function getServerSideProps(ctx) {
+  // eslint-disable-next-line camelcase
+  const { twitch_name } = ctx.req.auth.credentials;
   return {
     props: {
+      player: twitch_name,
     },
   };
 }
