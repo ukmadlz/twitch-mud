@@ -69,6 +69,7 @@ module.exports = async (server) => {
           twitch_id: id,
         }).count();
         let userData = {};
+        console.log(userExists);
         if (userExists < 1) {
           userData = await new Users({
             twitch_name: login,
