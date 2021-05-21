@@ -80,6 +80,12 @@ module.exports = (app, pathName, opts) => async (
 
       // Add an exit
       exit = mapGenerator.selectExit(layout);
+      layout[exit.y][exit.x] = {
+        wall: true,
+        destructable: true,
+        x: exit.x,
+        y: exit.y,
+      };
 
       // Save the map
       try {

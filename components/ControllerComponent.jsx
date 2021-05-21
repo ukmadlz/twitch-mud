@@ -69,8 +69,7 @@ class ControllerComponent extends React.Component {
   static doThing(user, action, direction) {
     const url = `/${user}/${action}/${direction}`;
     return async () => {
-      const { data } = await Axios.get(url);
-      console.log(data);
+      await Axios.get(url);
     };
   }
 
