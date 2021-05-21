@@ -67,7 +67,7 @@ module.exports = async (server) => {
         } = request.auth.credentials.profile;
         try {
           const userData = await new Users({
-            twitch_id: 0,
+            twitch_id: id,
           }).fetch();
           request.cookieAuth.set(userData.toJSON());
         } catch (error) {
