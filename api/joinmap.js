@@ -7,27 +7,20 @@ const Users = require('./models/users');
 const Players = require('./models/players');
 
 const realtime = new Ably.Realtime(process.env.ABLY_API_KEY);
-
-module.exports = (app, pathName, opts) => async (
-  { params, auth },
-  h,
-) => {
-  const { credentials } = auth;
-  // User settings
-  const { user } = params;
+const joinGame = async (user, userId) => {
   try {
     const mapExists = await new Map({
       user,
     }).count();
     const userExists = await new Users({
-      id: credentials.id,
+      id: userId,
     }).count();
     if (mapExists > 0 && userExists > 0) {
       const mapContents = await new Map({
         user,
       }).fetch();
       const userContent = await new Users({
-        id: credentials.id,
+        id: userId,
       }).fetch();
       let playerPosition = {};
       try {
@@ -56,10 +49,30 @@ module.exports = (app, pathName, opts) => async (
           playerPosition,
         }));
       }
-      return h.redirect(`/${user}/controller`);
+      return true;
     }
   } catch (e) {
     Debug.error(e);
-    return Boom.notFound('No map found.');
+    return false;
   }
+};
+
+const joinGameRoute = (app, pathName, opts) => async (
+  { params, auth },
+  h,
+) => {
+  const { credentials } = auth;
+  // User settings
+  const { user } = params;
+  // Make the call
+  const joined = joinGame(user, credentials.id);
+  if (joined) {
+    return h.redirect(`/${user}/controller`);
+  }
+  return Boom.notFound('No map found.');
+};
+
+module.exports = {
+  joinGame,
+  joinGameRoute,
 };

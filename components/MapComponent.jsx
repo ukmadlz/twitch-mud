@@ -134,7 +134,9 @@ class MapComponent extends React.Component {
           }
         }
         // If exit
-        if (exit.x === x && exit.y === y) {
+        if ((exit.x === x && exit.y === y)
+        || (fov && player && exit.x === (x + fov) && exit.y === (y + fov))) {
+          console.log('EXIT TO NO WHERE');
           fontColour = 'brown';
           blockColour = 'white';
           content = (

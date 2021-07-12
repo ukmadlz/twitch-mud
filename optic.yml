@@ -1,5 +1,13 @@
-name: "twitch-mud"
+name: "Twitch MUD"
+# Start your api with Optic by running 'api run <taskname>'
 tasks:
   start:
-    command: node server.js
-    inboundUrl: http://localhost:3000
+     command: "NODE_ENV=development node server.js"
+     inboundUrl: http://localhost:5000
+
+# Capture traffic from a deployed api by running 'api intercept <environment-name>'
+# pass '--chrome' to capture from your browser's network tab
+environments:
+  production:
+    host: https://api.github.com # the hostname of the API we should record traffic from
+    webUI: https://api.github.com/repos/opticdev/optic # the url that should open when a browser flag is passed
