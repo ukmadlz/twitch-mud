@@ -1,5 +1,7 @@
 const next = require('next');
 const Hapi = require('@hapi/hapi');
+const Nes = require('@hapi/nes');
+const Optic = require('@useoptic/hapi-middleware').default;
 const pino = require('hapi-pino');
 const Debug = require('./helpers/debug');
 const Bot = require('./bot');
@@ -21,7 +23,7 @@ const AblyTokenRequest = require('./api/ablyTokenRequest');
 const Auth = require('./api/auth');
 
 app.prepare().then(async () => {
-  await server.register({
+  await server.register([{
     plugin: pino,
     options: {
       prettyPrint: false,
@@ -29,7 +31,14 @@ app.prepare().then(async () => {
       redact: ['req.headers.authorization'],
       mergeHapiLogData: true,
     },
-  });
+  },
+  Nes,
+  {
+    plugin: Optic,
+    options: {
+      enabled: true,
+    },
+  }]);
   await Auth(server);
   server.route({
     method: 'GET',
